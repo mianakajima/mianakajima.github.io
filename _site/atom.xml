@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Learnings</title>
+ <link href="/atom.xml" rel="self"/>
+ <link href="https://mianakajima.github.io//"/>
+ <updated>2022-07-13T19:31:36-07:00</updated>
+ <id>https://mianakajima.github.io/</id>
+ <author>
+   <name>Mia Nakajima</name>
+   <email>mb.nakajima@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Learnings from Kaggle House Prices Competition - Part 1</title>
+   <link href="https://mianakajima.github.io//2022/07/13/MLLearnings/"/>
+   <updated>2022-07-13T00:00:00-07:00</updated>
+   <id>https://mianakajima.github.io//2022/07/13/MLLearnings</id>
+   <content type="html">&lt;p&gt;I wanted to try getting familiar with sklearn’s machine learning pipeline, so I started applying it to the Kaggle House Prices Competition. The data comprised of housing prices in Ames, Iowa with 79 features. I ended up learning a lot through the whole process.&lt;/p&gt;
+
+&lt;h2 id=&quot;data-exploration-and-cleaning&quot;&gt;Data Exploration and Cleaning&lt;/h2&gt;
+
+&lt;p&gt;This was a great dataset (probably purposefully so, being a “Getting Started” competition) to practice a workflow for analyzing data since there were so many features. It definitely reminded me that I need to have the patience to observe all the data. I ended up going through a couple rounds of data cleaning.&lt;/p&gt;
+
+&lt;p&gt;To make the data cleaning workflow more streamlined in the future, I came up with this workflow:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Steps for reviewing data&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Review data explanations if available!&lt;/li&gt;
+  &lt;li&gt;Review missing data
+    &lt;ul&gt;
+      &lt;li&gt;&lt;em&gt;Purpose&lt;/em&gt;: To omit columns that have too many missing values, identify data cleaning approach (ie., imputation or other)&lt;/li&gt;
+      &lt;li&gt;Make sure to understand why data is missing. For example, in this dataset the data is NA if the house does not have a certain feature (ie., a fence). This is valuable information and should be cleaned to represent that, and not be tossed out.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Visualization
+    &lt;ul&gt;
+      &lt;li&gt;&lt;em&gt;Purpose&lt;/em&gt;: This can help understand correlations between the features and dependent variable. Additionally, this can help show any quirks of the dataset.
+        &lt;ul&gt;
+          &lt;li&gt;Look at distribution of output variable - is it normally distributed? If not, consider transforming the variable.&lt;/li&gt;
+          &lt;li&gt;Make pair scatter plots of all the numeric variables.&lt;/li&gt;
+          &lt;li&gt;Make boxplots of categorical variables with respect to the dependent variable&lt;/li&gt;
+          &lt;li&gt;Any others that might be helpful&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;the-sklearn-pipeline&quot;&gt;The sklearn pipeline&lt;/h2&gt;
+
+&lt;h3 id=&quot;first-some-terminology&quot;&gt;First, some terminology&lt;/h3&gt;
+
+&lt;p&gt;One thing I learned is that there are many words in machine learning that sound scary but are actually very simple concepts. For example, “pipeline” sounds very scary, but it’s just a fancy word to describe a way to apply a series of functions to your data, either to clean your data, transform it or model it.&lt;/p&gt;
+
+&lt;p&gt;Below are some of such words that I’ll keep be using throughout:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Terminology&lt;/th&gt;
+      &lt;th&gt;In “English”&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pipeline&lt;/td&gt;
+      &lt;td&gt;An object you can use to apply many functions to your data (for data cleaning, transforming or modeling)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Transformer&lt;/td&gt;
+      &lt;td&gt;A function to “transform” your data, which can be as simple as scaling it&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Custom Transformer&lt;/td&gt;
+      &lt;td&gt;A function you write that can be applied to your pipeline&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Feature Engineering&lt;/td&gt;
+      &lt;td&gt;You use the variables (features) you have to come up with new ones that may be helpful. For example if you have square footage and rooms, maybe you want to know the square footage per room.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;the-pipeline&quot;&gt;The Pipeline&lt;/h3&gt;
+&lt;p&gt;Using sklearn’s pipeline was super streamlined! Below shows a code snippet of what the pipeline looks like. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ColumnTransfomer()&lt;/code&gt; function allows you to apply different pipelines to the data by the column name. In this case, I had 3 separate pipelines by the data type. Each pipeline is composed of sklearn functions or custom transformers.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;
+# Pipeline for numeric variables
+numeric_pipeline = Pipeline(steps = [
+    (&apos;postprocess&apos;, CleanRemodels()),
+    (&apos;impute&apos;, SimpleImputer(strategy = &apos;median&apos;)),
+    (&apos;homearea&apos;, add_home_area()),
+    (&apos;scale&apos;, MinMaxScaler())
+])
+
+# Pipeline for categorical variables
+cat_pipeline = Pipeline(steps = [
+    (&apos;postprocess&apos;, clean_categorical()),
+    (&apos;onehot&apos;, OneHotEncoder(handle_unknown = &apos;ignore&apos;))
+])
+
+# Pipeline for categorical variables that should be changed into numeric
+cat_ordinal_pipeline = Pipeline(steps = [
+    (&apos;postprocess&apos;, clean_categorical()),
+    (&apos;impute&apos;, SimpleImputer(strategy = &apos;most_frequent&apos;)),
+    (&apos;ordinal&apos;, change_to_ordinal()),
+    (&apos;scale&apos;, MinMaxScaler())
+])
+
+# Full pipeline that gets applied to data, which combines above three pipelines
+# ColumnTransfomer allows different pipelines to be applied to the data by
+# passing in the columns it should apply to.
+full_pipeline = ColumnTransformer([
+    (&quot;cat&quot;, cat_pipeline, cat_columns),
+    (&quot;num&quot;, numeric_pipeline, num_columns),
+    (&quot;ord&quot;, cat_ordinal_pipeline, ordinal_columns)
+])
+
+housing_prepared = full_pipeline.fit_transform(training)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;custom-transformers&quot;&gt;Custom Transformers&lt;/h3&gt;
+
+&lt;p&gt;A useful thing I learned is that you can create custom transfomers and add it to your pipeline. For example, I created a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;add_home_area&lt;/code&gt; Custom Transformer that adds the total home area to the dataset, which I decided to add for feature engineering. This is used in the numeric pipeline above.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;class add_home_area(BaseEstimator, TransformerMixin):
+    &quot;&quot;&quot;
+    Function to add total home area to numeric variables
+    &quot;&quot;&quot;
+
+    def fit(self, X, y = None):
+        return self
+
+    def transform(self, X):
+        total_area = np.sum(X[:, indexes], axis = 1)
+
+        return np.c_[X, total_area]
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+
+</feed>
