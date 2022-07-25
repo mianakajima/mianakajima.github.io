@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://mianakajima.github.io//2022/07/13/MLLearnings/</loc>
+<loc>http://localhost:4000/2022/07/13/MLLearnings/</loc>
 <lastmod>2022-07-13T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>https://mianakajima.github.io//about/</loc>
+<loc>http://localhost:4000/2022/07/22/QuadraticProgramming/</loc>
+<lastmod>2022-07-22T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>https://mianakajima.github.io//blog/</loc>
+<loc>http://localhost:4000/about/</loc>
 </url>
 <url>
-<loc>https://mianakajima.github.io//</loc>
+<loc>http://localhost:4000/blog/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page2/</loc>
 </url>
 </urlset>

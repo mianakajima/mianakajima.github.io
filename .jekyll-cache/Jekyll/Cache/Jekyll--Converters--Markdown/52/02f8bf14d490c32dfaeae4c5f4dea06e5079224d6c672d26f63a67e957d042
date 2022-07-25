@@ -1,0 +1,3 @@
+I"5<p>I am currently trying to reproduce a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Priya Donti, Brandon Amos and J. Zico Kolter.
+In this paper, they propose a method to learn to predict something, taking into account the end task that the prediction would be used for.</p>
+:ET
