@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Learnings from Kaggle House Prices Competition - Part 1 
+title: Learnings from Kaggle House Prices Competition - Part 1
 ---
 
 I wanted to try getting familiar with sklearn's machine learning pipeline, so I started applying it to the Kaggle House Prices Competition. The data comprised of housing prices in Ames, Iowa with 79 features. I ended up learning a lot through the whole process.
@@ -44,7 +44,7 @@ Below are some of such words that I'll keep be using throughout:
 ### The Pipeline
 Using sklearn's pipeline was super streamlined! Below shows a code snippet of what the pipeline looks like. The `ColumnTransfomer()` function allows you to apply different pipelines to the data by the column name. In this case, I had 3 separate pipelines by the data type. Each pipeline is composed of sklearn functions or custom transformers.
 
-~~~Python
+{% highlight Python%}
 
 # Pipeline for numeric variables
 numeric_pipeline = Pipeline(steps = [
@@ -79,13 +79,13 @@ full_pipeline = ColumnTransformer([
 
 housing_prepared = full_pipeline.fit_transform(training)
 
-~~~
+{%endhighlight%}
 
 ### Custom Transformers
 
 A useful thing I learned is that you can create custom transfomers and add it to your pipeline. For example, I created a `add_home_area` Custom Transformer that adds the total home area to the dataset, which I decided to add for feature engineering. This is used in the numeric pipeline above.
 
-```Python
+{% highlight Python %}
 class add_home_area(BaseEstimator, TransformerMixin):
     """
     Function to add total home area to numeric variables
@@ -98,4 +98,4 @@ class add_home_area(BaseEstimator, TransformerMixin):
         total_area = np.sum(X[:, indexes], axis = 1)
 
         return np.c_[X, total_area]
-```
+{% endhighlight %}

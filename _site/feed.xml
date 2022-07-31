@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-07-24T22:33:16-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Learnings</title><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><entry><title type="html">Stochastic Optimization of Electric Grid Forecasts</title><link href="http://localhost:4000/2022/07/22/QuadraticProgramming/" rel="alternate" type="text/html" title="Stochastic Optimization of Electric Grid Forecasts" /><published>2022-07-22T00:00:00-07:00</published><updated>2022-07-22T00:00:00-07:00</updated><id>http://localhost:4000/2022/07/22/QuadraticProgramming</id><content type="html" xml:base="http://localhost:4000/2022/07/22/QuadraticProgramming/"><![CDATA[<p>I am currently trying to reproduce a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Priya Donti, Brandon Amos and J. Zico Kolter.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-07-30T22:27:44-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Learnings</title><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><entry><title type="html">Stochastic Optimization of Electric Grid Forecasts</title><link href="http://localhost:4000/2022/07/22/QuadraticProgramming/" rel="alternate" type="text/html" title="Stochastic Optimization of Electric Grid Forecasts" /><published>2022-07-22T00:00:00-07:00</published><updated>2022-07-22T00:00:00-07:00</updated><id>http://localhost:4000/2022/07/22/QuadraticProgramming</id><content type="html" xml:base="http://localhost:4000/2022/07/22/QuadraticProgramming/"><![CDATA[<p>I am currently trying to reproduce a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Priya Donti, Brandon Amos and J. Zico Kolter.
 In this paper, they propose a method to learn to predict something, taking into account the end task that the prediction would be used for.</p>
 
 <p>This wouldn’t be necessary if we could predict what we’re trying to predict perfectly, but we know that’s not always the case ;) Since our model won’t be perfect, we want to make sure that the model performs well in the task it will be used for.</p>
@@ -181,56 +181,52 @@ In this paper, they propose a method to learn to predict something, taking into 
 <h3 id="the-pipeline">The Pipeline</h3>
 <p>Using sklearn’s pipeline was super streamlined! Below shows a code snippet of what the pipeline looks like. The <code class="language-plaintext highlighter-rouge">ColumnTransfomer()</code> function allows you to apply different pipelines to the data by the column name. In this case, I had 3 separate pipelines by the data type. Each pipeline is composed of sklearn functions or custom transformers.</p>
 
-<pre><code class="language-Python">
-# Pipeline for numeric variables
-numeric_pipeline = Pipeline(steps = [
-    ('postprocess', CleanRemodels()),
-    ('impute', SimpleImputer(strategy = 'median')),
-    ('homearea', add_home_area()),
-    ('scale', MinMaxScaler())
-])
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># Pipeline for numeric variables
+</span><span class="n">numeric_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s">'postprocess'</span><span class="p">,</span> <span class="n">CleanRemodels</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s">'impute'</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="s">'median'</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">'homearea'</span><span class="p">,</span> <span class="n">add_home_area</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s">'scale'</span><span class="p">,</span> <span class="n">MinMaxScaler</span><span class="p">())</span>
+<span class="p">])</span>
 
-# Pipeline for categorical variables
-cat_pipeline = Pipeline(steps = [
-    ('postprocess', clean_categorical()),
-    ('onehot', OneHotEncoder(handle_unknown = 'ignore'))
-])
+<span class="c1"># Pipeline for categorical variables
+</span><span class="n">cat_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s">'postprocess'</span><span class="p">,</span> <span class="n">clean_categorical</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s">'onehot'</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span> <span class="o">=</span> <span class="s">'ignore'</span><span class="p">))</span>
+<span class="p">])</span>
 
-# Pipeline for categorical variables that should be changed into numeric
-cat_ordinal_pipeline = Pipeline(steps = [
-    ('postprocess', clean_categorical()),
-    ('impute', SimpleImputer(strategy = 'most_frequent')),
-    ('ordinal', change_to_ordinal()),
-    ('scale', MinMaxScaler())
-])
+<span class="c1"># Pipeline for categorical variables that should be changed into numeric
+</span><span class="n">cat_ordinal_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s">'postprocess'</span><span class="p">,</span> <span class="n">clean_categorical</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s">'impute'</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="s">'most_frequent'</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">'ordinal'</span><span class="p">,</span> <span class="n">change_to_ordinal</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s">'scale'</span><span class="p">,</span> <span class="n">MinMaxScaler</span><span class="p">())</span>
+<span class="p">])</span>
 
-# Full pipeline that gets applied to data, which combines above three pipelines
+<span class="c1"># Full pipeline that gets applied to data, which combines above three pipelines
 # ColumnTransfomer allows different pipelines to be applied to the data by
 # passing in the columns it should apply to.
-full_pipeline = ColumnTransformer([
-    ("cat", cat_pipeline, cat_columns),
-    ("num", numeric_pipeline, num_columns),
-    ("ord", cat_ordinal_pipeline, ordinal_columns)
-])
+</span><span class="n">full_pipeline</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">([</span>
+    <span class="p">(</span><span class="s">"cat"</span><span class="p">,</span> <span class="n">cat_pipeline</span><span class="p">,</span> <span class="n">cat_columns</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">"num"</span><span class="p">,</span> <span class="n">numeric_pipeline</span><span class="p">,</span> <span class="n">num_columns</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">"ord"</span><span class="p">,</span> <span class="n">cat_ordinal_pipeline</span><span class="p">,</span> <span class="n">ordinal_columns</span><span class="p">)</span>
+<span class="p">])</span>
 
-housing_prepared = full_pipeline.fit_transform(training)
-
-</code></pre>
+<span class="n">housing_prepared</span> <span class="o">=</span> <span class="n">full_pipeline</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">training</span><span class="p">)</span></code></pre></figure>
 
 <h3 id="custom-transformers">Custom Transformers</h3>
 
 <p>A useful thing I learned is that you can create custom transfomers and add it to your pipeline. For example, I created a <code class="language-plaintext highlighter-rouge">add_home_area</code> Custom Transformer that adds the total home area to the dataset, which I decided to add for feature engineering. This is used in the numeric pipeline above.</p>
 
-<pre><code class="language-Python">class add_home_area(BaseEstimator, TransformerMixin):
-    """
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">add_home_area</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="s">"""
     Function to add total home area to numeric variables
-    """
+    """</span>
 
-    def fit(self, X, y = None):
-        return self
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
-    def transform(self, X):
-        total_area = np.sum(X[:, indexes], axis = 1)
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">total_area</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">indexes</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 
-        return np.c_[X, total_area]
-</code></pre>]]></content><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><summary type="html"><![CDATA[I wanted to try getting familiar with sklearn’s machine learning pipeline, so I started applying it to the Kaggle House Prices Competition. The data comprised of housing prices in Ames, Iowa with 79 features. I ended up learning a lot through the whole process.]]></summary></entry></feed>
+        <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">c_</span><span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">total_area</span><span class="p">]</span></code></pre></figure>]]></content><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><summary type="html"><![CDATA[I wanted to try getting familiar with sklearn’s machine learning pipeline, so I started applying it to the Kaggle House Prices Competition. The data comprised of housing prices in Ames, Iowa with 79 features. I ended up learning a lot through the whole process.]]></summary></entry></feed>
