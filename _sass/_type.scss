@@ -23,9 +23,16 @@ h3 {
   font-size: 1.25rem;
 }
 
-h4, h5, h6 {
+h4, h6 {
   margin-top: 1rem;
   font-size: 1rem;
+}
+
+h5 {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-style: italic;
+
 }
 
 p {
@@ -39,8 +46,10 @@ ul, ol, dl {
 }
 
 nav ul {
+  margin-top: 0rem;
+  margin-bottom: 0rem;
   text-align: left;
-  padding-left: 0;
+  padding-left: 1rem;
 }
 
 nav li {

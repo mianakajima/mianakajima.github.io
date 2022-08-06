@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://localhost:4000/2022/07/13/MLLearnings/</loc>
+<loc>https://mianakajima.github.io//2022/07/13/MLLearnings/</loc>
 <lastmod>2022-07-13T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/2022/07/22/QuadraticProgramming/</loc>
+<loc>https://mianakajima.github.io//2022/07/22/QuadraticProgramming/</loc>
 <lastmod>2022-07-22T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/about/</loc>
+<loc>https://mianakajima.github.io//projects/task-based-ML/</loc>
+<lastmod>2022-08-05T17:18:04-07:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/blog/</loc>
+<loc>https://mianakajima.github.io//about/</loc>
 </url>
 <url>
-<loc>http://localhost:4000/</loc>
+<loc>https://mianakajima.github.io//blog/</loc>
 </url>
 <url>
-<loc>http://localhost:4000/page2/</loc>
+<loc>https://mianakajima.github.io//</loc>
+</url>
+<url>
+<loc>https://mianakajima.github.io//projects/</loc>
+</url>
+<url>
+<loc>https://mianakajima.github.io//page2/</loc>
 </url>
 </urlset>

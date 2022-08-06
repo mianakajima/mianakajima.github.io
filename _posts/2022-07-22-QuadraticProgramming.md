@@ -42,7 +42,7 @@ Where:
 
 Since we don't know actually how much demand for energy there will be and we must assume it's a random variable, this is a stochastic optimization problem.
 
-The authors of this paper solve this problem using a "stochastic gradient approach". I understood this to mean stochastic gradient descent using the cost function above rather than standard cost functions, such as root mean square error. The specific steps are:
+The authors of this paper solve this problem using a "stochastic gradient approach". I understood this to mean gradient descent using the cost function above rather than standard cost functions, such as root mean square error. The specific steps are:
 
 1. Say $x$ (features such as weather) and $y$ (the true demand) come from some true distribution, $D$. And we are able to create an initial model $z = f(x \vert \theta)$ that predicts the demand, $z$ from features $x$.
 2. Sample $(x, y)$ from true distrubution $D$

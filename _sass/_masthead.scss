@@ -5,11 +5,13 @@
 .masthead {
   padding-top: var(--spacer);
   padding-bottom: var(--spacer);
-  margin-bottom: var(--spacer-3);
+  margin-bottom: var(--spacer-2);
+//  background-color: #DFE8CC;
 }
 
 .masthead-title {
   margin-bottom: 0;
+  padding-left: 1rem;
 
   a {
     color: inherit;

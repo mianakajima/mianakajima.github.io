@@ -3,14 +3,19 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
+collections:
+  projects:
+    output: true
+
+
 # Permalinks
 #
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 
 # Setup
-title:               Learnings
-tagline:             Mia Nakajima
+title:               Mia Nakajima
+tagline:
 url:                 https://mianakajima.github.io/
 paginate:            1
 baseurl:             ""
