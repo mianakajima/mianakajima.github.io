@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
- <title>Mia Nakajima</title>
+ <title>The Green ML Student</title>
  <link href="/atom.xml" rel="self"/>
- <link href="https://mianakajima.github.io//"/>
- <updated>2022-08-05T17:18:04-07:00</updated>
- <id>https://mianakajima.github.io/</id>
+ <link href="http://localhost:4000/"/>
+ <updated>2022-08-08T14:47:10-07:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>Mia Nakajima</name>
    <email>mb.nakajima@gmail.com</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Stochastic Optimization of Electric Grid Forecasts</title>
-   <link href="https://mianakajima.github.io//2022/07/22/QuadraticProgramming/"/>
+   <link href="http://localhost:4000/2022/07/22/QuadraticProgramming/"/>
    <updated>2022-07-22T00:00:00-07:00</updated>
-   <id>https://mianakajima.github.io//2022/07/22/QuadraticProgramming</id>
+   <id>http://localhost:4000/2022/07/22/QuadraticProgramming</id>
    <content type="html">&lt;p&gt;I am currently trying to reproduce a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Priya Donti, Brandon Amos and J. Zico Kolter.
 In this paper, they propose a method to learn to predict something, taking into account the end task that the prediction would be used for.&lt;/p&gt;
 
@@ -136,9 +136,9 @@ In this paper, they propose a method to learn to predict something, taking into 
  
  <entry>
    <title>Learnings from Kaggle House Prices Competition - Part 1</title>
-   <link href="https://mianakajima.github.io//2022/07/13/MLLearnings/"/>
+   <link href="http://localhost:4000/2022/07/13/MLLearnings/"/>
    <updated>2022-07-13T00:00:00-07:00</updated>
-   <id>https://mianakajima.github.io//2022/07/13/MLLearnings</id>
+   <id>http://localhost:4000/2022/07/13/MLLearnings</id>
    <content type="html">&lt;p&gt;I wanted to try getting familiar with sklearn’s machine learning pipeline, so I started applying it to the Kaggle House Prices Competition. The data comprised of housing prices in Ames, Iowa with 79 features. I ended up learning a lot through the whole process.&lt;/p&gt;
 
 &lt;h2 id=&quot;data-exploration-and-cleaning&quot;&gt;Data Exploration and Cleaning&lt;/h2&gt;
