@@ -6,6 +6,8 @@ plugins:
 collections:
   projects:
     output: true
+  minute-papers:
+    output: true
 
 
 # Permalinks

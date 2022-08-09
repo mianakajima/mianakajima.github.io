@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://localhost:4000/minute-papers/01-SACforDSMCityLearn/</loc>
+<lastmod>2022-08-09T15:27:36-07:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/2022/07/13/MLLearnings/</loc>
 <lastmod>2022-07-13T00:00:00-07:00</lastmod>
 </url>
@@ -10,7 +14,7 @@
 </url>
 <url>
 <loc>http://localhost:4000/projects/task-based-ML/</loc>
-<lastmod>2022-08-08T14:47:10-07:00</lastmod>
+<lastmod>2022-08-09T15:27:36-07:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>
@@ -20,6 +24,9 @@
 </url>
 <url>
 <loc>http://localhost:4000/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/minute-papers/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/projects/</loc>
