@@ -16,8 +16,8 @@ collections:
 permalink:           pretty
 
 # Setup
-title:               The Green ML Student
-tagline:             Mia Nakajima
+title:               Mia Nakajima
+tagline:
 url:                 https://mianakajima.github.io/
 paginate:            1
 baseurl:             ""
