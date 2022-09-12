@@ -20,8 +20,6 @@ tex2jax: {
   </title>
 
   <link rel="stylesheet" href="/styles.css">
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/apple-touch-icon-precomposed.png">
-  <link rel="shortcut icon" href="/assets/favicon.ico">
   <link rel="alternate" type="application/atom+xml" title="Mia Nakajima" href="/atom.xml">
 
   <!-- Begin Jekyll SEO tag v2.8.0 -->
@@ -35,11 +33,11 @@ tex2jax: {
 <meta property="og:url" content="http://localhost:4000/projects/task-based-ML/" />
 <meta property="og:site_name" content="Mia Nakajima" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2022-09-10T13:33:03-07:00" />
+<meta property="article:published_time" content="2022-09-11T17:05:09-07:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Reproducing a paper on task-based learning for electric grid scheduling" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mia Nakajima"},"dateModified":"2022-09-10T13:33:03-07:00","datePublished":"2022-09-10T13:33:03-07:00","description":"Reproduced a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Donti et al applied to electric grid scheduling. Reviewed results for the optimization problem provided in the paper. Then, experimented with what the schedule may look like when adding penalties for overproducing during hours with high non-renewable energy generation.","headline":"Reproducing a paper on task-based learning for electric grid scheduling","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/task-based-ML/"},"url":"http://localhost:4000/projects/task-based-ML/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mia Nakajima"},"dateModified":"2022-09-11T17:05:09-07:00","datePublished":"2022-09-11T17:05:09-07:00","description":"Reproduced a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Donti et al applied to electric grid scheduling. Reviewed results for the optimization problem provided in the paper. Then, experimented with what the schedule may look like when adding penalties for overproducing during hours with high non-renewable energy generation.","headline":"Reproducing a paper on task-based learning for electric grid scheduling","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/task-based-ML/"},"url":"http://localhost:4000/projects/task-based-ML/"}</script>
 <!-- End Jekyll SEO tag -->
 
 </head>
@@ -56,8 +54,6 @@ tex2jax: {
   <ul>
     
       <li><a href="/" >Home</a>
-    
-      <li><a href="/about/index.html" >About</a>
     
       <li><a href="/blog/index.html" >Blog</a>
     
@@ -91,7 +87,7 @@ tex2jax: {
 
 <p>In the diagram below, I drew out how the process works.</p>
 
-<p><img src="/assets/task-based-ML/task_based_diagram.png" alt="Diagram of Task-based learning" class="img_responsive" /></p>
+<center><img src="/assets/task-based-ML/task_based_diagram.png" /></center>
 
 <ul>
   <li>Step 1: Train our initial model.
@@ -145,7 +141,7 @@ tex2jax: {
 
 <p>The RMSE loss model had a lower RMSE than the task loss model by about 33%. On the other hand, the Task loss model did much better on reducing task loss than the RMSE loss model and showed an improvement of about 30 times!</p>
 
-<p><img src="/assets/task-based-ML/hourly_metrics_combined.png" alt="Comparison of RMSE to Task loss" class="img_responsive" /></p>
+<center><img src="/assets/task-based-ML/hourly_metrics_combined.png" /></center>
 
 <p>This scenario ended up being exactly the case where task-based learning would be helpful. In training, the accuracy of the model was pretty good - 99.7% on average. However on the test dataset, the accuracy dropped to 95.1% which led to almost doubling the task loss in the test scenario.</p>
 
@@ -153,7 +149,7 @@ tex2jax: {
 
 <p>The graph below shows the average learned electric schedule over a year compared to the actual load in the test dataset.</p>
 
-<p><img src="/assets/task-based-ML/avg_load_rmse_task_comparison.png" alt="Average load" class="img_responsive" /></p>
+<center><img src="/assets/task-based-ML/avg_load_rmse_task_comparison.png" /></center>
 
 <h3 id="experimentation-with-differing-weights">Experimentation with Differing Weights</h3>
 
@@ -161,11 +157,11 @@ tex2jax: {
 
 <h4 id="equal-weights">Equal Weights</h4>
 
-<p>I first tried training the model in the case that the weights for overgenerating and undergenerating were exactly the same. Not suprisingly, the learned model seems to be very similar to the original RMSE loss model.</p>
+<p>I first tried training the model in the case that the weights for overgenerating and undergenerating were exactly the same. Not surprisingly, the learned model seems to be very similar to the original RMSE loss model.</p>
 
 <p>Mathematically, the loss function for the optimization problem would just reduce to a scaled mean square error. So training on this loss function would essentially just be like extending training our neural net on the RMSE model for more epochs.</p>
 
-<p><img src="/assets/task-based-ML/equal_weight_comparison.png" alt="Equal Weights Average Load" class="img_responsive" /></p>
+<center><img src="/assets/task-based-ML/equal_weight_comparison.png" /></center>
 
 <h4 id="weight-overgeneration-by-hour-to-simulate-grid-cleanliness">Weight overgeneration by hour to simulate grid cleanliness</h4>
 
@@ -173,20 +169,21 @@ tex2jax: {
 
 <p>Grid cleanliness differs by the hour depending on the generation mix. For example, CAISO (the independent system operator my region is under) has grid emissions differing by hour like shown below. There are less emissions during the day when the sun is out and higher otherwise. Grid emissions differ also by the time of year, but we can use the hourly average to start with.</p>
 
-<p><img src="/assets/task-based-ML/grid_cleanliness.png" alt="Grid emissions by hour" class="img_responsive" />
-<em>Source: <a href="http://beyondefficiency.us/blog/whats-dirtiest-time-day-use-electricity">Beyond Efficiency blog</a></em></p>
+<center><img src="/assets/task-based-ML/grid_cleanliness.png" /></center>
+<center>Source: <a href="http://beyondefficiency.us/blog/whats-dirtiest-time-day-use-electricity">Beyond Efficiency Blog</a> </center>
+<p><br /></p>
 
 <p>We can try to minimize the GHG emissions by considering emitting GHGs as an overgeneration cost. Additionally, we can modify our optimization problem to have differing weights for overgeneration by the hour to capture the differing GHG emissions by time of day.</p>
 
 <p>As an estimate, I used overgeneration and undergeneration weights in the graph below. For undergeneration, I used a constant weight of 25 while for overgeneration, I used the values for ‘20XX’ in the Beyond Efficiency blog above and scaled it to have an average value of 25.</p>
 
-<p><img src="/assets/task-based-ML/opt_emissions_weights.png" alt="Optimization Weights" class="img_responsive" /></p>
+<center><img src="/assets/task-based-ML/opt_emissions_weights.png" /></center>
 
 <p>Using these weights, I then trained the neural network according to this new task loss which includes costs of both undergenerating and overgenerating during high emission times. I compare this new model (Task loss including emissions) with the RMSE loss model below.</p>
 
 <p>We can see that it is now balancing the costs of undergenerating with the grid emissions, overgerating during day time hours and undergenerating during “dirtier” hours in the early morning and evening hours!</p>
 
-<p><img src="/assets/task-based-ML/emissions_average_load.jpg" alt="Emissions Model" class="img_responsive" /></p>
+<center><img src="/assets/task-based-ML/emissions_average_load.jpg" /></center>
 
 <p>It’s worth noting that there needs to be some tuning of the weight sizes to achieve the effect desired and there might need to be some tinkering to figure out how the weight sizes affect the magnitude of change in the model.</p>
 
@@ -211,7 +208,7 @@ tex2jax: {
 
       <footer class="footer">
         <small>
-          &copy; <time datetime="2022-09-10T13:33:03-07:00">2022</time>. All rights reserved.
+          &copy; <time datetime="2022-09-11T17:05:09-07:00">2022</time>. All rights reserved.
         </small>
       </footer>
     </div>

@@ -3,32 +3,41 @@ layout: default
 title: Home
 ---
 
+<div class="intro">
+<h1>Hello!</h1>
 
-<div class="posts">
-  {% for post in paginator.posts %}
-  <article class="post">
-    <h1 class="post-title">
-      <a href="{{ post.url | relative_url }}">
-        {{ post.title }}
-      </a>
-    </h1>
+<p> I am currently at the <a href="https://www.recurse.com/">Recurse Center</a> and this site is to write about my learnings in machine learning, statistics and other related subjects. </p>
 
-    <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
+<p> I have been in the sustainability and built environment space for about five years, since my senior year of college. I worked as an energy analyst in engineering/consulting, where we researched ways to make buildings more energy efficient and lessen their climate impacts. I am deeply concerned about climate change! </p>
 
-    {{ post.content }}
-  </article>
-  {% endfor %}
+<p> On a day to day, I enjoy doing analysis and coding. I have been spending much of Recurse Center learning about deep learning. Outside of my room, you can find me at the bouldering gym or eating chocolate :) </p><br>
+    <div class="flex-container">
+        <div class="link">
+            <a href="https://github.com/mianakajima">
+             <img alt="Github" src="/assets/GitHub-Mark-64px.png"
+             width="31" height="31">
+            </a>
+        </div>
+        <div class="textlink">
+            <a href="https://github.com/mianakajima" style="color: black"> GitHub </a>
+        </div>
+    </div>
+
+    <div class="flex-container">
+        <div class="link">
+            <a href="https://www.linkedin.com/in/mia-nakajima-b53625155/">
+                 <img alt="LinkedIn" src="/assets/LI-In-Bug.png"
+         width="33" height="31">
+             </a>
+
+        </div>
+        <div class="textlink">
+             <a href="https://www.linkedin.com/in/mia-nakajima-b53625155/" style="color: black"> LinkedIn </a>
+        </div>
+
+
+
+    </div>
+
 </div>
 
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ paginator.next_page_path | relative_url }}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    <a class="pagination-item newer" href="{{ paginator.previous_page_path | prepend: relative_url }}">Newer</a>
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
-</div>

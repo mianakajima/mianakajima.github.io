@@ -23,8 +23,7 @@ Since we don't live in an ideal world though, the model will probably still have
 
 In the diagram below, I drew out how the process works.
 
-
-![Diagram of Task-based learning](/assets/task-based-ML/task_based_diagram.png){:class="img_responsive"}
+<center><img src="/assets/task-based-ML/task_based_diagram.png"></center>
 
 - Step 1: Train our initial model.
   - We first train a model (a neural network in this case) to predict the electricity demands using a traditional root mean square error (RMSE) loss function. We train this model over many epochs.
@@ -66,7 +65,7 @@ Below we compare the initial neural net trained on the RMSE loss function (RMSE 
 The RMSE loss model had a lower RMSE than the task loss model by about 33%. On the other hand, the Task loss model did much better on reducing task loss than the RMSE loss model and showed an improvement of about 30 times!
 
 
-![Comparison of RMSE to Task loss](/assets/task-based-ML/hourly_metrics_combined.png){:class="img_responsive"}
+<center><img src="/assets/task-based-ML/hourly_metrics_combined.png"></center>
 
 This scenario ended up being exactly the case where task-based learning would be helpful. In training, the accuracy of the model was pretty good - 99.7% on average. However on the test dataset, the accuracy dropped to 95.1% which led to almost doubling the task loss in the test scenario.
 
@@ -75,7 +74,7 @@ On the other hand, in order to compensate for the high cost of underproducing, t
 The graph below shows the average learned electric schedule over a year compared to the actual load in the test dataset.
 
 
-![Average load](/assets/task-based-ML/avg_load_rmse_task_comparison.png){:class="img_responsive"}
+<center><img src="/assets/task-based-ML/avg_load_rmse_task_comparison.png"></center>
 
 
 ### Experimentation with Differing Weights
@@ -84,12 +83,12 @@ Now the fun part! After implementing the model from the paper, I decided to try 
 
 #### Equal Weights
 
-I first tried training the model in the case that the weights for overgenerating and undergenerating were exactly the same. Not suprisingly, the learned model seems to be very similar to the original RMSE loss model.
+I first tried training the model in the case that the weights for overgenerating and undergenerating were exactly the same. Not surprisingly, the learned model seems to be very similar to the original RMSE loss model.
 
 Mathematically, the loss function for the optimization problem would just reduce to a scaled mean square error. So training on this loss function would essentially just be like extending training our neural net on the RMSE model for more epochs.
 
 
-![Equal Weights Average Load](/assets/task-based-ML/equal_weight_comparison.png){:class="img_responsive"}
+<center><img src="/assets/task-based-ML/equal_weight_comparison.png"></center>
 
 #### Weight overgeneration by hour to simulate grid cleanliness
 
@@ -97,20 +96,20 @@ Like the metastudy suggested, I then wanted to see how this methodology could be
 
 Grid cleanliness differs by the hour depending on the generation mix. For example, CAISO (the independent system operator my region is under) has grid emissions differing by hour like shown below. There are less emissions during the day when the sun is out and higher otherwise. Grid emissions differ also by the time of year, but we can use the hourly average to start with.
 
-![Grid emissions by hour](/assets/task-based-ML/grid_cleanliness.png){:class="img_responsive"}
-*Source: [Beyond Efficiency blog](http://beyondefficiency.us/blog/whats-dirtiest-time-day-use-electricity)*
+<center><img src="/assets/task-based-ML/grid_cleanliness.png"></center>
+<center>Source: <a href="http://beyondefficiency.us/blog/whats-dirtiest-time-day-use-electricity">Beyond Efficiency Blog</a> </center><br>
 
 We can try to minimize the GHG emissions by considering emitting GHGs as an overgeneration cost. Additionally, we can modify our optimization problem to have differing weights for overgeneration by the hour to capture the differing GHG emissions by time of day.
 
 As an estimate, I used overgeneration and undergeneration weights in the graph below. For undergeneration, I used a constant weight of 25 while for overgeneration, I used the values for '20XX' in the Beyond Efficiency blog above and scaled it to have an average value of 25.
 
-![Optimization Weights](/assets/task-based-ML/opt_emissions_weights.png){:class="img_responsive"}
+<center><img src="/assets/task-based-ML/opt_emissions_weights.png"></center>
 
 Using these weights, I then trained the neural network according to this new task loss which includes costs of both undergenerating and overgenerating during high emission times. I compare this new model (Task loss including emissions) with the RMSE loss model below.
 
 We can see that it is now balancing the costs of undergenerating with the grid emissions, overgerating during day time hours and undergenerating during "dirtier" hours in the early morning and evening hours!
 
-![Emissions Model](/assets/task-based-ML/emissions_average_load.jpg){:class="img_responsive"}
+<center><img src="/assets/task-based-ML/emissions_average_load.jpg"></center>
 
 It's worth noting that there needs to be some tuning of the weight sizes to achieve the effect desired and there might need to be some tinkering to figure out how the weight sizes affect the magnitude of change in the model.
 
