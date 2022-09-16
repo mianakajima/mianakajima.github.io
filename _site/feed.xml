@@ -1,4 +1,145 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-09-11T17:05:09-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Mia Nakajima</title><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><entry><title type="html">Stochastic Optimization of Electric Grid Forecasts</title><link href="http://localhost:4000/2022/07/22/QuadraticProgramming/" rel="alternate" type="text/html" title="Stochastic Optimization of Electric Grid Forecasts" /><published>2022-07-22T00:00:00-07:00</published><updated>2022-07-22T00:00:00-07:00</updated><id>http://localhost:4000/2022/07/22/QuadraticProgramming</id><content type="html" xml:base="http://localhost:4000/2022/07/22/QuadraticProgramming/"><![CDATA[<p>I am currently trying to reproduce a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Priya Donti, Brandon Amos and J. Zico Kolter.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-09-15T17:44:50-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Mia Nakajima</title><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><entry><title type="html">Tips and Tricks for Working with Satellite Imagery</title><link href="http://localhost:4000/2022/09/15/TipsTricksSatelliteImagery/" rel="alternate" type="text/html" title="Tips and Tricks for Working with Satellite Imagery" /><published>2022-09-15T00:00:00-07:00</published><updated>2022-09-15T00:00:00-07:00</updated><id>http://localhost:4000/2022/09/15/TipsTricksSatelliteImagery</id><content type="html" xml:base="http://localhost:4000/2022/09/15/TipsTricksSatelliteImagery/"><![CDATA[<p>I am currently working with Google Earth Engine to do machine learning with satellite imagery. 
+These are a couple of things I learned/wish I had known before pressing run on my code. 😅</p>
+
+<h2 id="1-exporting-and-aligning-images---crs-and-crstransform">1. Exporting and aligning images - <code class="language-plaintext highlighter-rouge">crs</code> and <code class="language-plaintext highlighter-rouge">crsTransform</code></h2>
+
+<p>When using Google Earth Engine’s Python API, you can export your satellite imagery to your Google Drive using <a href="https://developers.google.com/earth-engine/apidocs/export-image-todrive"><code class="language-plaintext highlighter-rouge">Export.image.toDrive()</code></a>.</p>
+
+<p>With the function, you can specify the image you want to download, as well as the region, size, and dimensions you want to download the image at. At a cursory glance, you may think that specifying the <code class="language-plaintext highlighter-rouge">region</code> (coordinates representing region to export) and <code class="language-plaintext highlighter-rouge">scale</code> (resolution in meters per pixel) arguments are enough to download an image. 
+I initially did this and ignored the <code class="language-plaintext highlighter-rouge">crs</code> and <code class="language-plaintext highlighter-rouge">crsTransform</code> arguments. 
+This is true, <em>only</em> if you are only looking at one image collections.</p>
+
+<p>If you want to compare two image collections, chances are the way their pixels are exported with respect to longitude and latitude will differ from each other. 
+If you download images from these two image collections, each pixel will correspond to slightly different longitude and latitude values, even over the same region and scale.</p>
+
+<p>The way an image collection organizes their pixels are shown by the <code class="language-plaintext highlighter-rouge">crs</code> and <code class="language-plaintext highlighter-rouge">transform</code> attributes. To get these attributes, for example for an image collection, <code class="language-plaintext highlighter-rouge">night_lights</code>, you can use <code class="language-plaintext highlighter-rouge">night_lights.projection().getInfo()</code>. This function returns this:</p>
+
+<p><code class="language-plaintext highlighter-rouge">{'type': 'Projection', 'crs': 'EPSG:4326', 'transform': [1, 0, 0, 0, 1, 0]}</code></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">crs</code> is the <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">Coordinate Reference System</a> and the <code class="language-plaintext highlighter-rouge">transform</code> refers to the transformation used to export the image. The numbers in the list represent [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation] as shown in the documentation <a href="https://developers.google.com/earth-engine/guides/exporting">here</a>.</p>
+
+<p>By choosing one <code class="language-plaintext highlighter-rouge">crs</code> and <code class="language-plaintext highlighter-rouge">transform</code> to use for all your image collection, you can export images that share the same longitude and latitude for each pixel.</p>
+
+<p>The code would look like this:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">ee</span> 
+
+<span class="n">start_date</span> <span class="o">=</span> <span class="s">'2020-01-01'</span>
+<span class="n">end_date</span> <span class="o">=</span> <span class="s">'2020-12-31'</span>
+
+<span class="c1"># night light data - get median image for year
+</span><span class="n">night_light_2020</span> <span class="o">=</span> <span class="n">ee</span><span class="p">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s">"NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG"</span><span class="p">).</span><span class="n">filterDate</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">).</span><span class="n">select</span><span class="p">(</span><span class="s">'avg_rad'</span><span class="p">).</span><span class="n">median</span><span class="p">()</span>
+
+<span class="c1"># census data
+</span><span class="n">census_2020</span> <span class="o">=</span> <span class="n">ee</span><span class="p">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s">"CIESIN/GPWv411/GPW_Population_Count"</span><span class="p">).</span><span class="n">filterDate</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">).</span><span class="n">first</span><span class="p">()</span>
+
+<span class="c1"># get crs and crsTransform for the census data 
+</span><span class="n">crs_census</span> <span class="o">=</span> <span class="n">census_2020</span><span class="p">.</span><span class="n">projection</span><span class="p">().</span><span class="n">getInfo</span><span class="p">()[</span><span class="s">'crs'</span><span class="p">]</span>
+<span class="n">transform_census</span> <span class="o">=</span> <span class="n">census_2020</span><span class="p">.</span><span class="n">projection</span><span class="p">().</span><span class="n">getInfo</span><span class="p">()[</span><span class="s">'transform'</span><span class="p">]</span>
+
+<span class="c1"># specify region
+</span><span class="n">region</span> <span class="o">=</span> <span class="n">ee</span><span class="p">.</span><span class="n">Geometry</span><span class="p">.</span><span class="n">BBox</span><span class="p">(</span><span class="mf">135.9259</span><span class="p">,</span> <span class="mf">35.4698</span><span class="p">,</span> <span class="mf">140.8698</span> <span class="p">,</span> <span class="mf">36.6422</span><span class="p">)</span>
+
+<span class="c1"># export census image using census crs and transform 
+</span><span class="n">task</span> <span class="o">=</span> <span class="n">ee</span><span class="p">.</span><span class="n">batch</span><span class="p">.</span><span class="n">Export</span><span class="p">.</span><span class="n">image</span><span class="p">.</span><span class="n">toDrive</span><span class="p">(</span><span class="n">image</span> <span class="o">=</span> <span class="n">census_2020</span><span class="p">,</span>
+                                     <span class="n">fileNamePrefix</span> <span class="o">=</span> <span class="s">'censusexport'</span><span class="p">,</span>
+                                     <span class="n">region</span> <span class="o">=</span> <span class="n">region</span><span class="p">,</span>
+                                     <span class="n">crsTransform</span><span class="o">=</span><span class="n">transform_census</span><span class="p">,</span>
+                                     <span class="n">crs</span> <span class="o">=</span> <span class="n">crs_census</span><span class="p">)</span>
+
+<span class="n">task</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># export night light image using census crs and transform to match lon/lat
+</span><span class="n">task</span> <span class="o">=</span> <span class="n">ee</span><span class="p">.</span><span class="n">batch</span><span class="p">.</span><span class="n">Export</span><span class="p">.</span><span class="n">image</span><span class="p">.</span><span class="n">toDrive</span><span class="p">(</span><span class="n">image</span> <span class="o">=</span> <span class="n">night_light_2020</span><span class="p">,</span>
+                                     <span class="n">fileNamePrefix</span> <span class="o">=</span> <span class="s">'nightlightexport'</span><span class="p">,</span>
+                                     <span class="n">region</span> <span class="o">=</span> <span class="n">region</span><span class="p">,</span>
+                                     <span class="n">crsTransform</span><span class="o">=</span><span class="n">transform_census</span><span class="p">,</span>
+                                     <span class="n">crs</span> <span class="o">=</span> <span class="n">crs_census</span><span class="p">)</span>
+
+<span class="n">task</span><span class="p">.</span><span class="n">start</span><span class="p">()</span></code></pre></figure>
+
+<h2 id="2-you-might-not-have-to-download-or-export-the-image">2. You might not have to download or export the image…</h2>
+
+<p>If you don’t actually need an image and just need a numpy array of the image values (which may be the case if you are doing machine learning), you can use the <code class="language-plaintext highlighter-rouge">geemap</code> package.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">geemap</code> package has a function <a href="https://geemap.org/common/?h=ee_to_numpy#geemap.common.ee_to_geopandas"><code class="language-plaintext highlighter-rouge">ee_to_numpy()</code></a> which can be used to turn a Google Earth Engine image region into a numpy array. 
+The caveat is that it doesn’t seem to include the <code class="language-plaintext highlighter-rouge">crs</code> or <code class="language-plaintext highlighter-rouge">crsTransform</code> arguments we talked about above so this may be exclusive if you are just working with one image collection.</p>
+
+<h2 id="3-how-to-display-your-geotiff">3. How to display your GeoTIFF</h2>
+
+<p>I found that there are many ways you can show a GeoTIFF image - there are many packages out there, and you can also convert the image into a different datatype to plot it through <code class="language-plaintext highlighter-rouge">matplotlib</code> or <code class="language-plaintext highlighter-rouge">plotly</code>. 
+Here are the easiest ways I found to plot different types of GeoTIFF images.</p>
+
+<h3 id="if-you-just-have-one-bandgray-scale-image">If you just have one band/gray-scale image:</h3>
+
+<p>The easiest way I found was to use <code class="language-plaintext highlighter-rouge">rioxarray</code>. With <code class="language-plaintext highlighter-rouge">rioxarray</code>, plotting an image is as easy as two lines:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">image</span> <span class="o">=</span> <span class="n">rioxarray</span><span class="p">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="s">'image path'</span><span class="p">)</span>
+<span class="n">im</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s">'gray'</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/tipstricksSI/img.png" /></p>
+
+<h3 id="if-you-have-an-rgb-image">If you have an RGB image:</h3>
+
+<p>I found the <a href="https://earthpy.readthedocs.io/en/latest/"><code class="language-plaintext highlighter-rouge">earthpy</code></a> and <code class="language-plaintext highlighter-rouge">xarray</code> package to be helpful.</p>
+
+<p>First, we need to create an <code class="language-plaintext highlighter-rouge">xarray</code> object of all the bands that we want to plot.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">rioxarray</span>
+
+<span class="n">tiff</span> <span class="o">=</span> <span class="n">rioxarray</span><span class="p">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="s">'../data/test_japan_landsat.tif'</span><span class="p">)</span>
+<span class="n">tiff_ds</span> <span class="o">=</span> <span class="n">tiff</span><span class="p">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="s">'band'</span><span class="p">)</span>
+<span class="c1"># rename bands
+</span><span class="n">tiff_ds</span> <span class="o">=</span> <span class="n">tiff_ds</span><span class="p">.</span><span class="n">rename</span><span class="p">({</span><span class="mi">1</span><span class="p">:</span> <span class="s">'B1'</span><span class="p">,</span>
+                          <span class="mi">2</span><span class="p">:</span> <span class="s">'B2'</span><span class="p">,</span>
+                          <span class="mi">3</span><span class="p">:</span> <span class="s">'B3'</span><span class="p">,</span>
+                          <span class="mi">4</span><span class="p">:</span> <span class="s">'B4'</span><span class="p">,</span>
+                          <span class="mi">5</span><span class="p">:</span> <span class="s">'B5'</span><span class="p">,</span>
+                          <span class="mi">6</span><span class="p">:</span> <span class="s">'B6_VCID_1'</span><span class="p">,</span>
+                          <span class="mi">7</span><span class="p">:</span> <span class="s">'B6_VCID_2'</span><span class="p">,</span>
+                          <span class="mi">8</span><span class="p">:</span> <span class="s">'B7'</span><span class="p">,</span>
+                          <span class="mi">9</span><span class="p">:</span> <span class="s">'B8'</span><span class="p">})</span>
+<span class="n">tiff_ds</span></code></pre></figure>
+
+<p>This creates an <code class="language-plaintext highlighter-rouge">xarray</code> Dataset that looks like this:</p>
+
+<p><img src="/assets/tipstricksSI/xarray_output.png" alt="img.png" /></p>
+
+<p>Now, choose the bands we want to plot in RGB order using <code class="language-plaintext highlighter-rouge">xarray</code>:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="n">xr</span>
+
+<span class="c1"># for landsat, B3 = R, B2 = G, B1 = B
+</span><span class="n">rgb_bands</span> <span class="o">=</span> <span class="p">[</span><span class="n">tiff_ds</span><span class="p">.</span><span class="n">B3</span><span class="p">,</span> <span class="n">tiff_ds</span><span class="p">.</span><span class="n">B2</span><span class="p">,</span> <span class="n">tiff_ds</span><span class="p">.</span><span class="n">B1</span><span class="p">]</span>
+<span class="c1"># turn rgb bands into xarray object
+</span><span class="n">landsat_rgb</span> <span class="o">=</span> <span class="n">xr</span><span class="p">.</span><span class="n">concat</span><span class="p">(</span><span class="n">rgb_bands</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="s">"band"</span><span class="p">)</span></code></pre></figure>
+
+<p>And now, we can use the <code class="language-plaintext highlighter-rouge">earthpy</code> package:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">earthpy.plot</span> <span class="k">as</span> <span class="n">ep</span>
+<span class="n">ep</span><span class="p">.</span><span class="n">plot_rgb</span><span class="p">(</span><span class="n">landsat_rgb</span><span class="p">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/assets/tipstricksSI/earthpy1.png" alt="img.png" /></p>
+
+<p>This image looks very dark! We can explore this image using <code class="language-plaintext highlighter-rouge">ep.hist()</code>.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">ep</span><span class="p">.</span><span class="n">hist</span><span class="p">(</span><span class="n">landsat_rgb</span><span class="p">.</span><span class="n">values</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">"Band 3"</span><span class="p">,</span> <span class="s">"Band 2"</span><span class="p">,</span> <span class="s">"Band 1"</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/assets/tipstricksSI/hist.png" alt="img.png" /></p>
+
+<p>We can see that the values are very low since image values can take on values between 0 and 255.</p>
+
+<p>In order to be able to see the image better, we can use the <code class="language-plaintext highlighter-rouge">stretch</code> argument in <code class="language-plaintext highlighter-rouge">ep.plot_rgb()</code>.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">earthpy.plot</span> <span class="k">as</span> <span class="n">ep</span>
+<span class="n">ep</span><span class="p">.</span><span class="n">plot_rgb</span><span class="p">(</span><span class="n">landsat_rgb</span><span class="p">.</span><span class="n">values</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span></code></pre></figure>
+
+<p>We get the following image, that we are now able to see much better!</p>
+
+<p><img src="/assets/tipstricksSI/img_stretch.png" alt="img.png" /></p>]]></content><author><name>Mia Nakajima</name><email>mb.nakajima@gmail.com</email></author><summary type="html"><![CDATA[I am currently working with Google Earth Engine to do machine learning with satellite imagery. These are a couple of things I learned/wish I had known before pressing run on my code. 😅]]></summary></entry><entry><title type="html">Stochastic Optimization of Electric Grid Forecasts</title><link href="http://localhost:4000/2022/07/22/QuadraticProgramming/" rel="alternate" type="text/html" title="Stochastic Optimization of Electric Grid Forecasts" /><published>2022-07-22T00:00:00-07:00</published><updated>2022-07-22T00:00:00-07:00</updated><id>http://localhost:4000/2022/07/22/QuadraticProgramming</id><content type="html" xml:base="http://localhost:4000/2022/07/22/QuadraticProgramming/"><![CDATA[<p>I am currently trying to reproduce a paper “Task-based End-to-end Model Learning in Stochastic Optimization” by Priya Donti, Brandon Amos and J. Zico Kolter.
 In this paper, they propose a method to learn to predict something, taking into account the end task that the prediction would be used for.</p>
 
 <p>This wouldn’t be necessary if we could predict what we’re trying to predict perfectly, but we know that’s not always the case ;) Since our model won’t be perfect, we want to make sure that the model performs well in the task it will be used for.</p>

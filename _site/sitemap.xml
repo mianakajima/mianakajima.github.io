@@ -2,7 +2,7 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://localhost:4000/minute-papers/01-SACforDSMCityLearn/</loc>
-<lastmod>2022-09-11T17:05:09-07:00</lastmod>
+<lastmod>2022-09-15T17:44:50-07:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/2022/07/13/MLLearnings/</loc>
@@ -13,8 +13,12 @@
 <lastmod>2022-07-22T00:00:00-07:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/2022/09/15/TipsTricksSatelliteImagery/</loc>
+<lastmod>2022-09-15T00:00:00-07:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/projects/task-based-ML/</loc>
-<lastmod>2022-09-11T17:05:09-07:00</lastmod>
+<lastmod>2022-09-15T17:44:50-07:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>
@@ -33,5 +37,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page2/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page3/</loc>
 </url>
 </urlset>
